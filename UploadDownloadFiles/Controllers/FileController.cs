@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
+using System.Net.Http;
+using System.Web;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,23 +37,33 @@ namespace UploadDownloadFiles.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> DownloadFile(string filename)
+        public FileContentResult DownloadFile(string filename)
         {
-            if (filename == null)
-                return Content("filename not present");
-
             var path = Path.Combine(
                            Directory.GetCurrentDirectory(),
                            "wwwroot", filename);
 
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(path, FileMode.Open))
-            {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
-            return File(memory, GetContentType(path), Path.GetFileName(path));
+            return File(System.IO.File.ReadAllBytes(path), "application/octet-stream", filename);
         }
+
+        //[HttpGet("[action]")]
+        //public async Task<IActionResult> DownloadFile(string filename)
+        //{
+        //    if (filename == null)
+        //        return Content("filename not present");
+
+        //    var path = Path.Combine(
+        //                   Directory.GetCurrentDirectory(),
+        //                   "wwwroot", filename);
+
+        //    var memory = new MemoryStream();
+        //    using (var stream = new FileStream(path, FileMode.Open))
+        //    {
+        //        await stream.CopyToAsync(memory);
+        //    }
+        //    memory.Position = 0;
+        //    return File(memory, GetContentType(path), Path.GetFileName(path));
+        //}
 
         private string GetContentType(string path)
         {
