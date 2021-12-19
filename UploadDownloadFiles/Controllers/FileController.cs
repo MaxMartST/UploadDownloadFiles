@@ -37,13 +37,15 @@ namespace UploadDownloadFiles.Controllers
         }
 
         [HttpGet("[action]")]
-        public FileContentResult DownloadFile(string filename)
+        public async Task<IActionResult> DownloadFile(string filename)
         {
             var path = Path.Combine(
                            Directory.GetCurrentDirectory(),
                            "wwwroot", filename);
 
-            return File(System.IO.File.ReadAllBytes(path), "application/octet-stream", filename);
+            var bytes = await System.IO.File.ReadAllBytesAsync(path);
+
+            return File(bytes, "application/pdf", filename);
         }
 
         //[HttpGet("[action]")]
