@@ -36,17 +36,32 @@ namespace UploadDownloadFiles.Controllers
             return Ok();
         }
 
+        // Отправка потока. FileStreamResult
         [HttpGet("[action]")]
-        public async Task<IActionResult> DownloadFile(string filename)
+        public async Task<FileStreamResult> DownloadFile(string filename)
         {
             var path = Path.Combine(
                            Directory.GetCurrentDirectory(),
                            "wwwroot", filename);
 
-            var bytes = await System.IO.File.ReadAllBytesAsync(path);
+            FileStream fileStream = new FileStream(path, FileMode.Open);
 
-            return File(bytes, "application/pdf", filename);
+            string fileType = "application/pdf";
+
+            return File(fileStream, fileType, filename);
         }
+
+        //[HttpGet("[action]")]
+        //public async Task<IActionResult> DownloadFile(string filename)
+        //{
+        //    var path = Path.Combine(
+        //                   Directory.GetCurrentDirectory(),
+        //                   "wwwroot", filename);
+
+        //    var bytes = await System.IO.File.ReadAllBytesAsync(path);
+
+        //    return File(bytes, "application/pdf", filename);
+        //}
 
         //[HttpGet("[action]")]
         //public async Task<IActionResult> DownloadFile(string filename)
